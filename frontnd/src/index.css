@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@plugin "daisyui" {
+  themes: light --default;
+}
+
+
+/* CreateNewJobModal */
+.label {
+  @apply mb-0.5 block text-[10px] font-medium text-gray-600;
+}
+
+.input-xs {
+  @apply w-full rounded-md bg-gray-200
+  px-2 py-2 text-[11px]
+  outline-none focus:ring-1 focus:ring-blue-500;
+}
+
+.textarea-xs {
+  @apply w-full rounded-md bg-gray-200
+  px-2 py-2 text-[11px]
+  outline-none focus:ring-1 focus:ring-blue-500
+  resize-none;
+}
+
+.radial-progress {
+  --track: #e5e7eb;
+}
