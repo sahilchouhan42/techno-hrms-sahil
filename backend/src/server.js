@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
+import {apiLimiter} from "./middlewares/rateLimit.middleware.js"
 
 /* ===== ROUTES ===== */
 import visitorRoutes from "./routes/visitor.Routes.js";
@@ -16,6 +17,7 @@ import interviewRoutes from "./routes/interview.routes.js";
 import jobRoutes from "./routes/job.routes.js";
 import oldEmployeeRoutes from "./routes/oldEmployee.Routes.js";
 import errorHandler from "./middlewares/error.middleware.js";
+import rateLimit from "express-rate-limit";
 
 dotenv.config();
 
@@ -34,6 +36,9 @@ connectDB();
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+//rate limiter middleware
+app.use("/api", apiLimiter)
 
 /* ===== API ROUTES ===== */
 app.use("/api/visitor", visitorRoutes);

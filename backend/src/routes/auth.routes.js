@@ -4,11 +4,12 @@ import { loginSchema, registerSchema } from "../validators/employee.schema.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { registerEmployee } from "../controllers/EmployeeControllers/employee.controller.js";
 import { changePassword, forgotPassword, login, resetPasswordController, sendEmailOTP, verifyEmailOTP, logout } from "../controllers/auth.controller.js";
+import { loginLimiter } from "../middlewares/rateLimit.middleware.js";
 
 const router = express.Router();
 
 router.post("/register", validate(registerSchema), registerEmployee);
-router.post("/login", validate(loginSchema), login);
+router.post("/login", validate(loginSchema), loginLimiter, login);
 router.put("/change-password", authMiddleware, changePassword);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPasswordController);
