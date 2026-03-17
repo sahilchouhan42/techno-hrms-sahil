@@ -10,12 +10,7 @@ export const createAuditLog = async ({
   req,
 }) => {
   try {
-    if (oldApplication.status === status) {
-  return res.status(400).json({
-    success: false,
-    message: "Status already set to this value",
-  });
-}
+    
     await AuditLog.create({
       userId: user?._id,
       userName: user?.name,
@@ -24,7 +19,7 @@ export const createAuditLog = async ({
       recordId,
       oldData,
       newData,
-      ipAddress: req.ip,
+      ipAddress: req?.ip,
     });
   } catch (error) {
     console.error("Audit log error:", error);

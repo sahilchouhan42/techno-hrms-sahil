@@ -5,6 +5,7 @@ import { sendEmail } from "../utils/sendEmail.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
 import { verifyEmailOtpTemplate } from "../utils/emailTemplates/verifyEmailOtp.js";
 import Employee from "../models/employee.model.js";
+import { createAuditLog } from "../services/audit.service.js";
 
 ////////------------------LOGIN --------------------//////////
 
@@ -60,6 +61,14 @@ export const login = async (req, res) => {
         },
         accessToken,
       });
+
+    await createAuditLog({
+      user: employeeDoc,
+      action: "LOGIN",
+      module: "AUTH",
+      req
+    });
+
   } catch (error) {
     console.error("LOGIN ERROR 👉", error);
     res.status(500).json({ message: "Login failed" });
@@ -184,7 +193,7 @@ export const forgotPassword = async (req, res) => {
   await employeeDoc.save();
   const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
-    await sendEmail({
+  await sendEmail({
     to: employeeDoc.email,
     subject: "Password Reset",
     html: `<p>Click the link to reset your password:</p>
@@ -258,9 +267,9 @@ export const refreshAccessToken = async (req, res) => {
 
 //logout
 
-export const logout = async (req, res)=>{
+export const logout = async (req, res) => {
   try {
-       res.clearCookie("refreshToken", {
+    res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict"
@@ -271,8 +280,15 @@ export const logout = async (req, res)=>{
       message: "Logout successful"
     });
 
+    await createAuditLog({
+      user: req.user,
+      action: "LOGOUT",
+      module: "AUTH",
+      req
+    });
+
   } catch (error) {
     console.log(error.message)
-    return res.status(500).json({success: false, message: "Internal Server error"})
+    return res.status(500).json({ success: false, message: "Internal Server error" })
   }
 }
