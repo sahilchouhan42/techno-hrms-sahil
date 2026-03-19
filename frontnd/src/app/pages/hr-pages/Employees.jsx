@@ -9,9 +9,9 @@ import Loader from "../../../components/Loader";
 
 import {
  getEmployeesApi,
-} from "../../../api/employee-Api";
+} from "../../../api/employee-Api.js";
 
-export default function Employees() {
+export default function   Employees() {
   const navigate = useNavigate();
 
   const [employees, setEmployees] = useState([]);

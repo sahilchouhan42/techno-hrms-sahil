@@ -31,7 +31,7 @@ export const createVisitorApi = async (data) => {
 
 export const logOutApi = async()=>{
   try {
-    await publicAxios.post("/auth/logout")
+    await axiosInstance.post("/auth/logout")
   } catch (error) {
      throw error.response?.data || { message: error.message };
   }
