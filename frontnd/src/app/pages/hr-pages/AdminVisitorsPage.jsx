@@ -46,7 +46,7 @@ export default function AdminVisitorsPage() {
     }
   };
 
-  
+
   /* ================= FETCH EMPLOYEES ================= */
   const cleanedFilters = {
     role: "employee",
@@ -67,16 +67,16 @@ export default function AdminVisitorsPage() {
     }
   };
 
-  
+
   const filteredVisitors = useMemo(() => {
-  return visitors.filter((v) => {
-    return (
-      (!typeFilter || v.type === typeFilter) &&
-      v.fullName?.toLowerCase().includes(search.toLowerCase())
-      
-    );
-  });
-}, [visitors, typeFilter, search]);
+    return visitors.filter((v) => {
+      return (
+        (!typeFilter || v.type === typeFilter) &&
+        v.fullName?.toLowerCase().includes(search.toLowerCase())
+
+      );
+    });
+  }, [visitors, typeFilter, search]);
 
   useEffect(() => {
     setError("")
@@ -99,43 +99,46 @@ export default function AdminVisitorsPage() {
   //   : visitors;
 
   const handleApprove = async (id) => {
-  try {
+    const password = prompt("Enter your password to approve");
 
-    await updateVisitorStatusApi(id, { status: "approved" });
-    setVisitors((prev) =>
-      prev.map((v) =>
-        v._id === id ? { ...v, status: "approved" } : v
-      )
-    );
-  } catch (err) {
-    console.log(err);
-  }
-};
+    if (!password) return;
+    try {
 
-const handleReject = async (id) => {
-  try {
-     await updateVisitorStatusApi(id, { status: "rejected" });
-    setVisitors((prev) =>
-      prev.map((v) =>
-        v._id === id ? { ...v, status: "rejected" } : v
-      )
-    );
-  } catch (err) {
-    console.log(err);
-  }
-};
+      await updateVisitorStatusApi(id, { status: "approved", password });
+      setVisitors((prev) =>
+        prev.map((v) =>
+          v._id === id ? { ...v, status: "approved" } : v
+        )
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-const handleDelete = async (id) => {
-  if (!window.confirm("Are you sure?")) return;
+  const handleReject = async (id) => {
+    try {
+      await updateVisitorStatusApi(id, { status: "rejected" });
+      setVisitors((prev) =>
+        prev.map((v) =>
+          v._id === id ? { ...v, status: "rejected" } : v
+        )
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  try {
-    setVisitors((prev) =>
-      prev.filter((v) => v._id !== id)
-    );
-  } catch (err) {
-    console.log(err);
-  }
-};
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure?")) return;
+
+    try {
+      setVisitors((prev) =>
+        prev.filter((v) => v._id !== id)
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="p-4 min-h-screen">
@@ -145,7 +148,7 @@ const handleDelete = async (id) => {
         <h2 className="text-2xl font-bold mb-4 text-base-content">
           Visitor List
         </h2>
-{/* 
+        {/* 
         <div className="flex justify-end mb-3">
 
           <select
@@ -165,30 +168,30 @@ const handleDelete = async (id) => {
 
         <div className="flex items-center gap-2 mb-3">
 
-  {/* search input */}
-  <input
-    type="text"
-    placeholder="Search by name..."
-    className="input input-bordered w-52"
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-  />
+          {/* search input */}
+          <input
+            type="text"
+            placeholder="Search by name..."
+            className="input input-bordered w-52"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-  {/*  filter dropdown */}
-  <select
-    className="select select-bordered w-40"
-    value={typeFilter}
-    onChange={(e) => setTypeFilter(e.target.value)}
-  >
-    <option value="">All Types</option>
-    <option value="enquiry">Enquiry</option>
-    <option value="training">Training</option>
-    <option value="interview">Interview</option>
-    <option value="candidate">Candidate</option>
-    <option value="client">Client</option>
-  </select>
+          {/*  filter dropdown */}
+          <select
+            className="select select-bordered w-40"
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+          >
+            <option value="">All Types</option>
+            <option value="enquiry">Enquiry</option>
+            <option value="training">Training</option>
+            <option value="interview">Interview</option>
+            <option value="candidate">Candidate</option>
+            <option value="client">Client</option>
+          </select>
 
-</div>
+        </div>
 
       </div>
 
@@ -250,7 +253,7 @@ const handleDelete = async (id) => {
                       {v.status}
                     </span> */}
 
-                    
+
                     <span className={`badge ${getStatusClass(v.status)}`}>
                       {v.status}
                     </span>
@@ -283,68 +286,67 @@ const handleDelete = async (id) => {
 
                   <td className="flex gap-1">
 
-  {/* 👁 VIEW */}
-  <button
-    className="btn btn-xs btn-info"
-    onClick={() => navigate(`/hr/visitorDetails/${v._id}`)}
-  >
-    View
-  </button>
+                    {/*  view */}
+                    <button
+                      className="btn btn-xs btn-info"
+                      onClick={() => navigate(`/hr/visitorDetails/${v._id}`)}
+                    >
+                      View
+                    </button>
 
-  {/* ✅ APPROVE */}
-  {v.status === "pending" && (
-    <button
-      className="btn btn-xs btn-success"
-      disabled={actionLoading === v._id}
-      onClick={async () => {
-        setActionLoading(v._id);
-        await handleApprove(v._id);
-        setActionLoading(null);
-      }}
-    >
-      {actionLoading === v._id ? "..." : "Approve"}
-    </button>
-  )}
+                    {/*  approve */}
+                    {v.status === "pending" && (
+                      <button
+                        className="btn btn-xs btn-success"
+                        disabled={actionLoading === v._id}
+                        onClick={async () => {
+                          setActionLoading(v._id);
+                          await handleApprove(v._id);
+                          setActionLoading(null);
+                        }}
+                      >
+                        {actionLoading === v._id ? "..." : "Approve"}
+                      </button>
+                    )}
 
-  {/* ❌ REJECT */}
-  {v.status === "pending" && (
-    <button
-      className="btn btn-xs btn-error"
-      disabled={actionLoading === v._id}
-      onClick={async () => {
-        setActionLoading(v._id);
-        await handleReject(v._id);
-        setActionLoading(null);
-      }}
-    >
-      {actionLoading === v._id ? "..." : "Reject"}
-    </button>
-  )}
+                    {/*  reject */}
+                    {v.status === "pending" && (
+                      <button
+                        className="btn btn-xs btn-error"
+                        disabled={actionLoading === v._id}
+                        onClick={async () => {
+                          setActionLoading(v._id);
+                          await handleReject(v._id);
+                          setActionLoading(null);
+                        }}
+                      >
+                        {actionLoading === v._id ? "..." : "Reject"}
+                      </button>
+                    )}
 
-  {/* 🗑 DELETE */}
-  <button
-    className="btn btn-xs btn-outline"
-    disabled={actionLoading === v._id}
-    onClick={async () => {
-      setActionLoading(v._id);
-      await handleDelete(v._id);
-      setActionLoading(null);
-    }}
-  >
-    {actionLoading === v._id ? "..." : "Delete"}
-  </button>
+                    {/* delete */}
+                    <button
+                      className="btn btn-xs btn-outline"
+                      disabled={actionLoading === v._id}
+                      onClick={async () => {
+                        setActionLoading(v._id);
+                        await handleDelete(v._id);
+                        setActionLoading(null);
+                      }}
+                    >
+                      {actionLoading === v._id ? "..." : "Delete"}
+                    </button>
 
-  <button
-  className={`btn btn-sm ml-1 ${
-    v.type === "interview" && v.status === "approved" ? "btn-primary" : "btn-disabled"
-  }`}
-  disabled={!(v.type === "interview" && v.status === "approved")}
-  onClick={() => setSelectedVisitor(v)}
->
-  Schedule
-</button>
+                    <button
+                      className={`btn btn-sm ml-1 ${v.type === "interview" && v.status === "approved" ? "btn-primary" : "btn-disabled"
+                        }`}
+                      disabled={!(v.type === "interview" && v.status === "approved")}
+                      onClick={() => setSelectedVisitor(v)}
+                    >
+                      Schedule
+                    </button>
 
-</td>
+                  </td>
 
                 </tr>
 
