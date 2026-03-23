@@ -43,7 +43,7 @@ export default function AppRoutes() {
   return (
     <Routes>
       {/* ROOT REDIRECT */}
-      <Route path="/" element={<Redirect />} />
+      <Route path="/" element={<Login />} />
 
       {/* ===== PUBLIC ROUTES ===== */}
       <Route element={<PublicRoute />}>
